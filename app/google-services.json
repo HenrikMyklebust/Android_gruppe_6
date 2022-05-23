@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "862782183199",
+    "project_id": "tidevann-80839",
+    "storage_bucket": "tidevann-80839.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862782183199:android:30fa04a553c7fa9f66c22a",
+        "android_client_info": {
+          "package_name": "com.example.android_gruppe_6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862782183199-cjm751dnai7k4mj39j150lv44vvae0kd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android_gruppe_6",
+            "certificate_hash": "ec01cb914b177ea40d677cbaab45464d6f4f6b02"
+          }
+        },
+        {
+          "client_id": "862782183199-jn1qvso062nc5d65aorh6q6jtankcseh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8S0DjxpG9rVJ26lKBRy0V86mAPDktxtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862782183199-jn1qvso062nc5d65aorh6q6jtankcseh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
