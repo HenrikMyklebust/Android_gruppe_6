@@ -13,6 +13,9 @@ class ShowTideViewModel(val harbour: Harbour, val app: Application): ViewModel()
     private val _tides = MutableLiveData<List<Tide>>()
     val tides: LiveData<List<Tide>> get() = _tides
 
+    private val _viewingDay = MutableLiveData<Int>()
+    val viewingDay: LiveData<Int> get() = _viewingDay
+
     init {
         _tides.value = getDummyData()
     }
