@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Harbour(
     val name: String,
+    val forApi: String,
     val lat: Double,
     val long: Double
 ): Parcelable
