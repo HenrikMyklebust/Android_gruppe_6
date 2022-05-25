@@ -35,6 +35,7 @@ class HarbourlistFragment : Fragment() {
             if (null != it) {
                 this.findNavController().navigate(HarbourlistFragmentDirections
                     .actionHarbourlistFragmentToShowTideFragment(it))
+                viewModel.displayTideComplete()
             }
         })
 

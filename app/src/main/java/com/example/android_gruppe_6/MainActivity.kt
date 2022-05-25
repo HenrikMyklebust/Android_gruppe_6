@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.example.android_gruppe_6.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

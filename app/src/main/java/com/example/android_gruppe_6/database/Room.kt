@@ -1,32 +1,30 @@
 package com.example.android_gruppe_6.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.android_gruppe_6.domain.Harbors
 
 @Dao
 interface HarborDao {
 
-    // Få info om havn (lat,lon) samt all data for havnen
+    // Get tide data and harbour info
     @Transaction
-    @Query("SELECT * FROM DBHarbors WHERE name LIKE :harbor")
+    @Query("SELECT * FROM DbHarbour WHERE name LIKE :harbor")
     fun getHarborWithData(harbor: String): List<HarborWithData>
 
-    // Få kun data for havnen
-    @Query("SELECT * FROM DBHarborData WHERE harbor LIKE :harbor")
-    fun getData(harbor: String): List<DBHarborData>
+    // Get harbour info
+    @Query("SELECT * FROM DbTide WHERE harbor LIKE :harbor")
+    fun getData(harbor: String): List<DbTide>
 
-    // Legg til data for havn
+    // Insert harbour
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertData(d: List<DBHarborData>)
+    fun insertData(tide: List<DbTide>)
 
-    // Legg til ny havn
+    // Insert tide
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertHarbor(r: DBHarbors)
+    fun insertHarbor(harbour: List<DbHarbour>)
 }
 
-@Database(entities = [DBHarborData::class, DBHarbors::class],
+@Database(entities = [DbTide::class, DbHarbour::class],
     version = 1)
 
 abstract class HarborsDatabase : RoomDatabase() {
