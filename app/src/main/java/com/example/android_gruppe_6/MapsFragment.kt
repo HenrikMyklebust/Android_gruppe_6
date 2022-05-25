@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
@@ -19,6 +21,8 @@ import com.google.android.gms.maps.model.LatLng
 class MapsFragment : Fragment() {
     private val REQUEST_LOCATION_PERMISSION = 1
     private lateinit var map: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentLocation: LatLng
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -31,10 +35,13 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val stroemsund = LatLng(63.9, 15.6)
+
+
+
         val zoomlevel = 4f
+
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stroemsund, zoomlevel))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoomlevel))
         activity?.let { MapsInitializer.initialize(it) }
         map = googleMap
         map.setMyLocationEnabled(true)
@@ -46,7 +53,9 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        fusedLocationClient = activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
         return inflater.inflate(R.layout.fragment_maps, container, false)
+        getLastKnownLocation()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,6 +84,20 @@ class MapsFragment : Fragment() {
                 it,
                 Manifest.permission.ACCESS_FINE_LOCATION)
         } == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLastKnownLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location->
+                if (location != null) {
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                    // use your location object
+                    // get latitude , longitude and other info from this
+                }
+
+            }
+
     }
 
     @SuppressLint("MissingPermission")
