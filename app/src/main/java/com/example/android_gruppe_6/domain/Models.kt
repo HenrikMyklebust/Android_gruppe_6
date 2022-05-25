@@ -1,7 +1,7 @@
 package com.example.android_gruppe_6.domain
 
 
-data class HarborDataModel(
+data class HarborData(
     val harbor: String,
     val year: String,
     val month: String,
@@ -16,4 +16,11 @@ data class HarborDataModel(
     val p50: String,
     val p75: String,
     val p100: String
+)
+
+data class Harbors(
+    val name: String,
+    val apiName: String,
+    val lat: String,
+    val lon: String
 )

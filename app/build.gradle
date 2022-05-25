@@ -63,8 +63,11 @@ dependencies {
     implementation "androidx.room:room-runtime:2.5.0-alpha01"
     kapt "androidx.room:room-compiler:2.5.0-alpha01"
 
-    //Livedata
+    // Livedata
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'

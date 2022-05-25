@@ -4,16 +4,16 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.example.android_gruppe_6.domain.HarborDataModel
+import com.example.android_gruppe_6.domain.HarborData
 
-@Entity
-data class DatabaseHarborData constructor(
+@Entity(primaryKeys = ["harbor", "prognosis_len"])
+data class DBHarborData constructor(
     val harbor: String,
     val year: String,
     val month: String,
     val day: String,
     val hour: String,
-    @PrimaryKey val prognosis_len: String,
+    val prognosis_len: String,
     val surge: String,
     val tide: String,
     val total: String,
@@ -25,39 +25,18 @@ data class DatabaseHarborData constructor(
 )
 
 @Entity
-data class DatabaseHarbor constructor(
-    @PrimaryKey val harborName: String,
+data class DBHarbors constructor(
+    @PrimaryKey val name: String,
+    val apiName: String,
     val lat: String,
     val lon: String
 )
 
-data class HarborAndData(
-    @Embedded val harbor: DatabaseHarbor,
+data class HarborWithData(
+    @Embedded val harbor: DBHarbors,
     @Relation(
-        parentColumn = "harborName",
+        parentColumn = "name",
         entityColumn = "harbor"
     )
-    val harborData: DatabaseHarborData
+    val harborData: List<DBHarborData>
 )
-
-
-fun List<DatabaseHarborData>.asDomainModel(): List<HarborDataModel> {
-    return map {
-        HarborDataModel(
-            harbor = it.harbor,
-            year = it.year,
-            month = it.month,
-            day = it.day,
-            hour = it.hour,
-            prognosis_len = it.prognosis_len,
-            surge = it.surge,
-            tide = it.tide,
-            total = it.total,
-            p0 = it.p0,
-            p25 = it.p25,
-            p50 = it.p50,
-            p75 = it.p75,
-            p100 = it.p100
-        )
-    }
-}
