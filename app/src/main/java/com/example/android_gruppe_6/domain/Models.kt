@@ -31,7 +31,7 @@ data class Harbor(
     val lon: String
 ) : Parcelable
 
-fun getHarbours(): List<Harbour> {
+fun getHarbors(): List<Harbour> {
     return listOf(
         Harbour("Andenes Havn","andenes", 69.31428, 16.11939),
         Harbour("Bergen", "bergen",60.39299, 5.32415),

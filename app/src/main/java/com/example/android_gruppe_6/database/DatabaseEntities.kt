@@ -34,7 +34,7 @@ data class DbHarbour constructor(
 data class HarborWithData(
     @Embedded val harbor: DbHarbour,
     @Relation(
-        parentColumn = "name",
+        parentColumn = "apiName",
         entityColumn = "harbor"
     )
     val harborData: List<DbTide>

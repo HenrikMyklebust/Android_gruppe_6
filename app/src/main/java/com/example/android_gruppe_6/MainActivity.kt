@@ -33,9 +33,5 @@ class MainActivity : AppCompatActivity() {
 
         val repository = TideRepository(getDatabase(application))
 
-        lifecycleScope.launch {
-            val response = repository.getDataNetwork("bergen")
-            //println(response)
-        }
     }
 }
