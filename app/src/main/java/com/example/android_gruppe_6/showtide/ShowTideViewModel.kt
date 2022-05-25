@@ -1,6 +1,8 @@
 package com.example.android_gruppe_6.showtide
 
 import android.app.Application
+import android.icu.util.Calendar
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.HarborData
 import java.lang.IllegalArgumentException
+import java.util.Calendar.DAY_OF_MONTH
 
 class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
     private val _tides = MutableLiveData<List<HarborData>>()
@@ -18,6 +21,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
 
     init {
         _tides.value = getDummyData()
+        _viewingDay.value = getDay()
     }
 
 
@@ -29,6 +33,11 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
+    }
+    fun getDay(): Int {
+        val rightNow: Int = Calendar.getInstance().get(DAY_OF_MONTH)
+        Log.d("WTF", rightNow.toString())
+        return rightNow
     }
 }
 
