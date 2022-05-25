@@ -3,22 +3,38 @@ package com.example.android_gruppe_6
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.android_gruppe_6.domain.getHarbors
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 class MapsFragment : Fragment() {
     private val REQUEST_LOCATION_PERMISSION = 1
+    private var locationPermissionGranted = false
+    private val defaultLocation = LatLng(63.4, 10.4)
     private lateinit var map: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var currentLocation: LatLng
+
+    private var lastKnownLocation: Location? = null
+    private var likelyPlaceNames: Array<String?> = arrayOfNulls(0)
+    private var likelyPlaceAddresses: Array<String?> = arrayOfNulls(0)
+    private var likelyPlaceAttributions: Array<List<*>?> = arrayOfNulls(0)
+    private var likelyPlaceLatLngs: Array<LatLng?> = arrayOfNulls(0)
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -31,12 +47,27 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val stroemsund = LatLng(63.9, 15.6)
+        val harbors = getHarbors()
+        for (harbor in harbors) {
+            var coordinates = LatLng(harbor.lat, harbor.lon)
+            googleMap.addMarker(MarkerOptions().position(coordinates).title("Harbour"))
+
+        }
+
+
+
+
+
         val zoomlevel = 4f
+        /*getLastKnownLocation()*/
+        /*getDeviceLocation()*/
+
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stroemsund, zoomlevel))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, zoomlevel))
+
         activity?.let { MapsInitializer.initialize(it) }
         map = googleMap
+        googleMap.setMaxZoomPreference(6.0F)
         map.setMyLocationEnabled(true)
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL)
     }
@@ -46,7 +77,9 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        fusedLocationClient = activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
         return inflater.inflate(R.layout.fragment_maps, container, false)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,6 +111,54 @@ class MapsFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
+    fun getLastKnownLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location->
+                if (location != null) {
+                    currentLocation = LatLng(location.latitude, location.longitude)
+                    // use your location object
+                    // get latitude , longitude and other info from this
+                }
+
+            }
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationClient.lastLocation
+                activity?.let {
+                    locationResult.addOnCompleteListener(it) { task ->
+                        if (task.isSuccessful) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.result
+                            if (lastKnownLocation != null) {
+                                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(lastKnownLocation!!.latitude,
+                                        lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+                            }
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.")
+                            Log.e(TAG, "Exception: %s", task.exception)
+                            map?.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                            map?.uiSettings?.isMyLocationButtonEnabled = false
+                        }
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             map.isMyLocationEnabled = true
@@ -91,5 +172,20 @@ class MapsFragment : Fragment() {
                 )
             }
         }
+    }
+
+    companion object {
+        private val TAG = "HG-LOG"
+        private const val DEFAULT_ZOOM = 15
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
+        // Keys for storing activity state.
+        // [START maps_current_place_state_keys]
+        private const val KEY_CAMERA_POSITION = "camera_position"
+        private const val KEY_LOCATION = "location"
+        // [END maps_current_place_state_keys]
+
+        // Used for selecting the current place.
+        private const val M_MAX_ENTRIES = 5
     }
 }
