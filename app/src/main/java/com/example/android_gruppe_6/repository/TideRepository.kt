@@ -85,9 +85,9 @@ class TideRepository(private val database: HarborsDatabase) {
         withContext(Dispatchers.IO){
             database.harborDao.insertHarbor(getHarbors().map { DbHarbour(
                 name = it.name,
-                apiName = it.forApi,
+                apiName = it.apiName,
                 lat = it.lat,
-                lon = it.long
+                lon = it.lon
             ) })
         }
     }
