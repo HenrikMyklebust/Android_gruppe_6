@@ -4,8 +4,8 @@
     <data>
 
         <variable
-            name="harbour"
-            type="com.example.android_gruppe_6.data_class.Harbour" />
+            name="harbor"
+            type="com.example.android_gruppe_6.domain.Harbor" />
         <variable
             name="geo"
             type="String" />
@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/rvHarbourName"
-            android:text="@{harbour.name}"
+            android:text="@{harbor.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="0dp"

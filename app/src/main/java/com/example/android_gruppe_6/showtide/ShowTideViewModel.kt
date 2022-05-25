@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.android_gruppe_6.data_class.Harbour
 import com.example.android_gruppe_6.data_class.Tide
+import com.example.android_gruppe_6.domain.Harbor
 import java.lang.IllegalArgumentException
 
-class ShowTideViewModel(val harbour: Harbour, val app: Application): ViewModel() {
+class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
     private val _tides = MutableLiveData<List<Tide>>()
     val tides: LiveData<List<Tide>> get() = _tides
 
@@ -21,11 +21,11 @@ class ShowTideViewModel(val harbour: Harbour, val app: Application): ViewModel()
     }
 
 
-    class Factory(val harbour: Harbour, val app: Application): ViewModelProvider.Factory {
+    class Factory(val harbor: Harbor, val app: Application): ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ShowTideViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return ShowTideViewModel(harbour, app) as T
+                return ShowTideViewModel(harbor, app) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }

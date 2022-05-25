@@ -29,11 +29,11 @@
         android:label="ShowTideFragment" >
         <argument
             android:name="harbour"
-            app:argType="com.example.android_gruppe_6.data_class.Harbour" />
+            app:argType="com.example.android_gruppe_6.domain.Harbor" />
     </fragment>
     <fragment
         android:id="@+id/harbourlistFragment"
-        android:name="com.example.android_gruppe_6.harbourlist.HarbourlistFragment"
+        android:name="com.example.android_gruppe_6.harborlist.HarborlistFragment"
         android:label="fragment_harbourlist"
         tools:layout="@layout/fragment_harbourlist" >
         <action

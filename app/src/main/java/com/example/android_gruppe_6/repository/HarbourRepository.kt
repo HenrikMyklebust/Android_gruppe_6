@@ -2,7 +2,7 @@ package com.example.android_gruppe_6.repository
 
 import com.example.android_gruppe_6.database.*
 import com.example.android_gruppe_6.domain.HarborData
-import com.example.android_gruppe_6.domain.getHarbours
+import com.example.android_gruppe_6.domain.getHarbors
 import com.example.android_gruppe_6.network.HarborNetworkGet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,14 +30,14 @@ class HarbourRepository(private val database: HarborsDatabase) {
         withContext(Dispatchers.IO){
             val harborData = HarborData("Bergen", 2022, 5, 24, 12, 0, 0.24,-0.54, -0.30, 0.19, 0.24, 0.24, 0.24, 0.29)
             val harborData2 = HarborData("Bergen", 2022, 5, 24, 13, 1, 0.24,-0.54, -0.30, 0.19, 0.24, 0.24, 0.24, 0.29)
-            val harbours = getHarbours()
+            val harbors = getHarbors()
             val harborList = listOf(harborData,harborData2)
 
-            database.harborDao.insertHarbor(harbours.map { DbHarbour(
+            database.harborDao.insertHarbor(harbors.map { DbHarbour(
                 name = it.name,
-                apiName = it.forApi,
+                apiName = it.apiName,
                 lat = it.lat,
-                lon = it.long
+                lon = it.lon
             ) })
 
             database.harborDao.insertData(harborList.map {

@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.example.android_gruppe_6.R
-import com.example.android_gruppe_6.data_class.Harbour
 import com.example.android_gruppe_6.databinding.FragmentShowTideBinding
+import com.example.android_gruppe_6.domain.Harbor
 
 class ShowTideFragment : Fragment() {
 
@@ -17,10 +16,10 @@ class ShowTideFragment : Fragment() {
         val application = requireNotNull(activity).application
 
         //TODO() REPLACE WITH ARGS
-        val harbour = Harbour("Test Havn", "BERGEN", 0.0, 0.0)
-        //ShowTideFragmentArgs.fromBundle(requireArguments()).selectedHarbour
+        val harbor = Harbor("Test Havn", "BERGEN", 0.0, 0.0)
+        //ShowTideFragmentArgs.fromBundle(requireArguments()).selectedHarbor
 
-        ViewModelProvider(this, ShowTideViewModel.Factory(harbour, application))
+        ViewModelProvider(this, ShowTideViewModel.Factory(harbor, application))
             .get(ShowTideViewModel::class.java)
     }
 

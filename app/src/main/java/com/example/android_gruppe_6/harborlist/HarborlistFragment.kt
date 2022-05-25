@@ -1,4 +1,4 @@
-package com.example.android_gruppe_6.harbourlist
+package com.example.android_gruppe_6.harborlist
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.databinding.FragmentHarbourlistBinding
 
-class HarbourlistFragment : Fragment() {
+class HarborlistFragment : Fragment() {
 
-    private val viewModel: HarbourlistViewModel by lazy {
+    private val viewModel: HarborlistViewModel by lazy {
         val application = requireNotNull(activity).application
-        ViewModelProvider(this, HarbourlistViewModel.Factory(application))
-            .get(HarbourlistViewModel::class.java)
+        ViewModelProvider(this, HarborlistViewModel.Factory(application))
+            .get(HarborlistViewModel::class.java)
     }
 
 
@@ -28,12 +27,12 @@ class HarbourlistFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.rvHarbours.adapter = HarbourlistRvAdapter(HarbourlistRvAdapter.OnClickListener {
+        binding.rvHarbours.adapter = HarborlistRvAdapter(HarborlistRvAdapter.OnClickListener {
             viewModel.displayTide(it)
         })
-        viewModel.navigateToSelectedHarbour.observe(viewLifecycleOwner, Observer {
+        viewModel.navigateToSelectedHarbor.observe(viewLifecycleOwner, Observer {
             if (null != it) {
-                this.findNavController().navigate(HarbourlistFragmentDirections
+                this.findNavController().navigate(HarborlistFragmentDirections
                     .actionHarbourlistFragmentToShowTideFragment(it))
                 viewModel.displayTideComplete()
             }
