@@ -28,7 +28,7 @@
         android:name="com.example.android_gruppe_6.showtide.ShowTideFragment"
         android:label="ShowTideFragment" >
         <argument
-            android:name="harbour"
+            android:name="harbor"
             app:argType="com.example.android_gruppe_6.domain.Harbor" />
     </fragment>
     <fragment

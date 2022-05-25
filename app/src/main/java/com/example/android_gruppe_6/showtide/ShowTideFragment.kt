@@ -16,8 +16,8 @@ class ShowTideFragment : Fragment() {
         val application = requireNotNull(activity).application
 
         //TODO() REPLACE WITH ARGS
-        val harbor = Harbor("Test Havn", "BERGEN", 0.0, 0.0)
-        //ShowTideFragmentArgs.fromBundle(requireArguments()).selectedHarbor
+        //val harbor = Harbor("Test Havn", "BERGEN", 0.0, 0.0)
+        val harbor = ShowTideFragmentArgs.fromBundle(requireArguments()).harbor
 
         ViewModelProvider(this, ShowTideViewModel.Factory(harbor, application))
             .get(ShowTideViewModel::class.java)
