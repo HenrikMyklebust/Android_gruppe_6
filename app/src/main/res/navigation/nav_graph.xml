@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapsFragment">
+    app:startDestination="@id/harbourlistFragment">
 
     <fragment
         android:id="@+id/mainFragment"
@@ -23,4 +23,21 @@
         android:name="com.example.android_gruppe_6.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/showTideFragment"
+        android:name="com.example.android_gruppe_6.showtide.ShowTideFragment"
+        android:label="ShowTideFragment" >
+        <argument
+            android:name="harbour"
+            app:argType="com.example.android_gruppe_6.data_class.Harbour" />
+    </fragment>
+    <fragment
+        android:id="@+id/harbourlistFragment"
+        android:name="com.example.android_gruppe_6.harbourlist.HarbourlistFragment"
+        android:label="fragment_harbourlist"
+        tools:layout="@layout/fragment_harbourlist" >
+        <action
+            android:id="@+id/action_harbourlistFragment_to_showTideFragment"
+            app:destination="@id/showTideFragment" />
+    </fragment>
 </navigation>
