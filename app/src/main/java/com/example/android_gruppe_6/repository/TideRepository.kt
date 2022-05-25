@@ -1,7 +1,7 @@
 package com.example.android_gruppe_6.repository
 
 import com.example.android_gruppe_6.database.*
-import com.example.android_gruppe_6.domain.HarborData
+import com.example.android_gruppe_6.domain.TideData
 import com.example.android_gruppe_6.domain.getHarbors
 import com.example.android_gruppe_6.network.TideNetworkGet
 import kotlinx.coroutines.Dispatchers
@@ -11,13 +11,13 @@ import java.util.stream.IntStream.range
 
 class TideRepository(private val database: HarborsDatabase) {
 
-    suspend fun getApiTide(harborName: String): List<HarborData> {
+    suspend fun getApiTide(harborName: String): List<TideData> {
         var dataFromApi: String
         withContext(Dispatchers.IO) {
             dataFromApi = TideNetworkGet.tideData.getTideData(harborName)
         }
         val tideLines: MutableList<String> = dataFromApi.lines() as MutableList<String>
-        val tideDataPreParse: MutableList<HarborData> = mutableListOf()
+        val tideDataPreParse: MutableList<TideData> = mutableListOf()
         for (i in range(0, 9))
             tideLines.removeFirst()
         try {
@@ -25,7 +25,7 @@ class TideRepository(private val database: HarborsDatabase) {
                 val splitLines: MutableList<String> = line.split(" ") as MutableList<String>
                 splitLines.removeAll(listOf("", null))
 
-                val tide = HarborData(
+                val tide = TideData(
                     harborName,
                     splitLines[0].toInt(),
                     splitLines[1].toInt(),
@@ -49,7 +49,7 @@ class TideRepository(private val database: HarborsDatabase) {
     }
 
 
-    suspend fun insertTides(tide: List<HarborData>) {
+    suspend fun insertTides(tide: List<TideData>) {
         withContext(Dispatchers.IO){
             database.harborDao.insertData(tide.map {
                 DbTide(
