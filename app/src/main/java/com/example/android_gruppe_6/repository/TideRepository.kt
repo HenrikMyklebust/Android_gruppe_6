@@ -1,20 +1,38 @@
 package com.example.android_gruppe_6.repository
 
+import com.example.android_gruppe_6.data_class.Tide
 import com.example.android_gruppe_6.database.*
 import com.example.android_gruppe_6.domain.HarborData
 import com.example.android_gruppe_6.domain.getHarbours
-import com.example.android_gruppe_6.network.HarborNetworkGet
+import com.example.android_gruppe_6.network.TideNetworkGet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.stream.IntStream.range
 
-class HarbourRepository(private val database: HarborsDatabase) {
+class TideRepository(private val database: HarborsDatabase) {
 
     suspend fun getDataNetwork(harborName: String): String {
-        var harborData: String
+        var tideData: String
         withContext(Dispatchers.IO) {
-            harborData = HarborNetworkGet.harborData.getHarborData(harborName)
+            tideData = TideNetworkGet.tideData.getTideData(harborName)
         }
-        return harborData
+        val tideLines: MutableList<String> = tideData.lines() as MutableList<String>
+
+        for (i in range(0, 9))
+            tideLines.removeFirst()
+        for (i in tideLines) {
+            val split: MutableList<String> = i.split(" ") as MutableList<String>
+            for (j in split){
+                //if (j.isBlank())
+                //    split.removeAt()
+            }
+        }
+        return tideData
+    }
+
+
+    fun insertTide(tide: Tide) {
+
     }
 
     // Get data from specific harbor
