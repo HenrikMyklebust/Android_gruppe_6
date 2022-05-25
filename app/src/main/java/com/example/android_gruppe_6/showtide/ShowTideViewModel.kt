@@ -24,6 +24,11 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
         _viewingDay.value = getDay()
     }
 
+    fun getDay(): Int {
+        val rightNow: Int = Calendar.getInstance().get(DAY_OF_MONTH)
+        return rightNow
+    }
+
 
     class Factory(val harbor: Harbor, val app: Application): ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -33,11 +38,6 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
-    }
-    fun getDay(): Int {
-        val rightNow: Int = Calendar.getInstance().get(DAY_OF_MONTH)
-        Log.d("WTF", rightNow.toString())
-        return rightNow
     }
 }
 
