@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             .build()
         NavigationUI.setupWithNavController(myToolbar, navController, appBarConfiguration)
 
-        val repository = TideRepository(getDatabase(application))
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setOnItemSelectedListener {
