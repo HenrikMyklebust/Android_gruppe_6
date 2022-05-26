@@ -56,9 +56,9 @@ class ShowTideFragment : Fragment() {
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
 
-        cartesian.title("Trend of Sales of the Most Popular Products of ACME Corp.")
+        cartesian.title("Tidevann for {viewModel.harbour.name}")
 
-        cartesian.yAxis(0).title("Number of Bottles Sold (Thousands)")
+        cartesian.yAxis(0).title("Meter")
         cartesian.xAxis(0).labels().padding(5, 5, 5, 5)
 
 
@@ -80,13 +80,13 @@ class ShowTideFragment : Fragment() {
         series1.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
 
         val series2 = cartesian.line(series2Mapping)
-        series2.name("Total")
+        series2.name("Tide")
         series2.hovered().markers().enabled(true)
         series2.hovered().markers().type(MarkerType.CIRCLE).size(4)
         series2.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
 
         val series3 = cartesian.line(series3Mapping)
-        series3.name("Total")
+        series3.name("Surge")
         series3.hovered().markers().enabled(true)
         series3.hovered().markers().type(MarkerType.CIRCLE).size(4)
         series3.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
