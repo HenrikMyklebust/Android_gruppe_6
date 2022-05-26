@@ -27,8 +27,6 @@ class ShowTideFragment : Fragment() {
     private val viewModel: ShowTideViewModel by lazy {
         val application = requireNotNull(activity).application
 
-        //TODO() REPLACE WITH ARGS
-        //val harbor = Harbor("Test Havn", "BERGEN", 0.0, 0.0)
         val harbor = ShowTideFragmentArgs.fromBundle(requireArguments()).harbor
 
         ViewModelProvider(this, ShowTideViewModel.Factory(harbor, application))
@@ -47,11 +45,7 @@ class ShowTideFragment : Fragment() {
 
         binding.anyChartView.setProgressBar(binding.progressBar)
 
-
-
         binding.anyChartView.setChart(viewModel.cartesian.value)
-
-
 
         // Inflate the layout for this fragment
         return binding.root
