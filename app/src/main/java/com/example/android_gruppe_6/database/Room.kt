@@ -9,15 +9,19 @@ interface HarborDao {
     // Get tide data and harbour info
     @Transaction
     @Query("SELECT * FROM DbHarbour WHERE name LIKE :harbor")
-    fun getHarborWithData(harbor: String): List<HarborWithData>
+    fun getHarborWithTide(harbor: String): List<HarborWithTide>
 
-    // Get harbour info
+    // Get tide info
     @Query("SELECT * FROM DbTide WHERE harbor LIKE :harbor")
-    fun getData(harbor: String): List<DbTide>
+    fun getTide(harbor: String): List<DbTide>
+
+    // Get tide info on tides from spesific day
+    @Query("SELECT * FROM DbTide WHERE harbor LIKE :harbor AND day LIKE :day")
+    fun getTideOneDay(harbor: String, day: Int): List<DbTide>
 
     // Insert harbour
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertData(tide: List<DbTide>)
+    fun insertTide(tide: List<DbTide>)
 
     // Insert tide
     @Insert(onConflict = OnConflictStrategy.REPLACE)

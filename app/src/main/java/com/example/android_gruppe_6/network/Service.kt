@@ -12,7 +12,7 @@ interface HarborService {
 
 object TideNetworkGet {
     private const val BASE_URL = "http://10.239.120.166/weatherapi/tidalwater/"
-    val retrofit: Retrofit = Retrofit.Builder().baseUrl(BASE_URL)
+    private val retrofit: Retrofit = Retrofit.Builder().baseUrl(BASE_URL)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 

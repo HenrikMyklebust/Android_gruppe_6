@@ -11,6 +11,7 @@ import java.util.stream.IntStream.range
 
 class TideRepository(private val database: HarborsDatabase) {
 
+    // Download data on a single harbor
     suspend fun getApiTide(harborName: String): List<TideData> {
         var dataFromApi: String
         withContext(Dispatchers.IO) {
@@ -48,10 +49,19 @@ class TideRepository(private val database: HarborsDatabase) {
         return tideDataPreParse
     }
 
+    // Get data from specific harbor
+    suspend fun getDataDB(harborName: String): List<HarborWithTide> {
+        var response: List<HarborWithTide>
+        withContext(Dispatchers.IO){
+            response = database.harborDao.getHarborWithTide(harborName)
+        }
+        return response
+    }
 
+    // Insert data on tide
     suspend fun insertTides(tide: List<TideData>) {
         withContext(Dispatchers.IO){
-            database.harborDao.insertData(tide.map {
+            database.harborDao.insertTide(tide.map {
                 DbTide(
                     harbor = it.harbor,
                     year = it.year,
@@ -72,15 +82,7 @@ class TideRepository(private val database: HarborsDatabase) {
         }
     }
 
-    // Get data from specific harbor
-    suspend fun getDataDB(harborName: String): List<HarborWithData> {
-        var response: List<HarborWithData>
-        withContext(Dispatchers.IO){
-            response = database.harborDao.getHarborWithData(harborName)
-        }
-        return response
-    }
-
+    // Insert full list of harbors
     suspend fun insertHarbors() {
         withContext(Dispatchers.IO){
             database.harborDao.insertHarbor(getHarbors().map { DbHarbour(
