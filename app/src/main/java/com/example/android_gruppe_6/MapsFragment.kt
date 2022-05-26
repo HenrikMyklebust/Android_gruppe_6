@@ -57,6 +57,7 @@ class MapsFragment : Fragment() {
         for (harbor in harbors) {
             var coordinates = LatLng(harbor.lat, harbor.lon)
             val marker = MarkerOptions().position(coordinates)
+            marker.visible(false)
             markers.add(map.addMarker(marker)!!)
             googleMap.addMarker(
                 MarkerOptions().position(coordinates).title(harbor.name).icon(activity?.let {
