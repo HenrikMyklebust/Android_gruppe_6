@@ -34,11 +34,11 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     init {
         viewModelScope.launch {
             _tides.value = getTide()
+            _cartesian.value = makeCartesian()
         }
 
         _currentDayOfMonth.value = getDay()
         _displayingDay.value = _currentDayOfMonth.value
-        _cartesian.value = makeCartesian()
     }
 
     fun showNextDay(): String {

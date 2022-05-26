@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
@@ -45,7 +46,12 @@ class ShowTideFragment : Fragment() {
 
         binding.anyChartView.setProgressBar(binding.progressBar)
 
-        binding.anyChartView.setChart(viewModel.cartesian.value)
+        viewModel.cartesian.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                binding.anyChartView.setChart(viewModel.cartesian.value)
+            }
+        })
+
 
         // Inflate the layout for this fragment
         return binding.root
