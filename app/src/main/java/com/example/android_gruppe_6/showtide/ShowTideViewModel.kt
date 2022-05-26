@@ -15,34 +15,43 @@ import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
 import com.example.android_gruppe_6.repository.TideRepository
 import kotlinx.coroutines.launch
-import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.*
 
 class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() {
     private val _tides = MutableLiveData<List<TideData>>()
     val tides: LiveData<List<TideData>> get() = _tides
 
+    private val days = mutableListOf<Int>()
+    private var daysIndex: Int = 0
+    private var updateDays: Boolean = false
+
+    private var day: Int = 0
+    private var month: Int = 0
+    private var year: Int = 0
+
     private val _cartesian = MutableLiveData<Cartesian>()
     val cartesian: LiveData<Cartesian> get() = _cartesian
-
-    private val _currentDayOfMonth = MutableLiveData<Int>()
-    val currentDayOfMonth: LiveData<Int> get() = _currentDayOfMonth
 
     private val _displayingDay = MutableLiveData<Int>()
 
     private val repository = TideRepository(getDatabase(app.applicationContext))
 
     init {
+        val temp = Calendar.getInstance()
+        day = temp.get(DAY_OF_MONTH)
+        month = temp.get(MONTH)
+        year = temp.get(YEAR)
+
         viewModelScope.launch {
             _tides.value = getTide()
             _cartesian.value = makeCartesian()
         }
-
-        _currentDayOfMonth.value = getDay()
-        _displayingDay.value = _currentDayOfMonth.value
     }
 
-    fun showNextDay(): String {
-        return "NextDay"
+    fun showNextDay() {
+        if (daysIndex < days.size) {
+            daysIndex += 1
+        }
     }
 
     fun showPreciousDay(): String {
@@ -55,6 +64,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     }
 
     private suspend fun getTide(): List<TideData> {
+        updateDays = true
         var tide: List<TideData>
 
         tide = repository.getDbTide(harbor.apiName)
@@ -74,6 +84,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
     private fun makeCartesian() : Cartesian {
         val cartesian : Cartesian = AnyChart.line()
+
         cartesian.animation(true)
         cartesian.padding(10, 20, 5, 20)
 
@@ -82,8 +93,6 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
 
-        cartesian.title("Tide for ${harbor.name}")
-
         cartesian.yAxis(0).title("Meter")
         cartesian.xAxis(0).title("Hour")
         cartesian.xAxis(0).labels().padding(5, 5, 5, 5)
@@ -91,10 +100,25 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
         val seriesData = mutableListOf<DataEntry>()
 
+        if (updateDays) {
+            days.clear()
+            daysIndex = 0
+            month = tides.value!![0].month
+        }
 
         for (x in _tides.value.orEmpty()) {
-            seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
+            if (updateDays) {
+                days.add(x.day)
+            }
+            if (x.day == days[daysIndex]) {
+                seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
+            }
         }
+        if (updateDays) {
+            updateDays = false
+        }
+
+        cartesian.title("Tide for ${harbor.name}: ${days[daysIndex]}/$month")
 
         val set = Set.instantiate()
         set.data(seriesData)
