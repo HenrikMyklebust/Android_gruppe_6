@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="Previous Day"
+        android:id="@+id/previousDay"
+        android:icon="@drawable/ic_baseline_arrow_back_ios_24"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="Close"
+        android:id="@+id/popShowTide"
+        android:icon="@drawable/ic_baseline_close_24"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="Next day"
+        android:id="@+id/nextDay"
+        android:icon="@drawable/ic_baseline_arrow_forward_ios_24"
+        app:showAsAction="ifRoom"/>
+
+</menu>
