@@ -16,12 +16,15 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
     private val _tides = MutableLiveData<List<TideData>>()
     val tides: LiveData<List<TideData>> get() = _tides
 
-    private val _viewingDay = MutableLiveData<Int>()
-    val viewingDay: LiveData<Int> get() = _viewingDay
+    private val _currentDayOfMonth = MutableLiveData<Int>()
+    val currentDayOfMonth: LiveData<Int> get() = _currentDayOfMonth
+
+    private val _displayingDay = MutableLiveData<Int>()
 
     init {
         _tides.value = getDummyData()
-        _viewingDay.value = getDay()
+        _currentDayOfMonth.value = getDay()
+        _displayingDay.value = _currentDayOfMonth.value
     }
 
     fun getDay(): Int {
@@ -29,6 +32,9 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application): ViewModel() {
         return rightNow
     }
 
+    fun nextDay() {
+        _displayingDay.value = _displayingDay.value?.plus(1)
+    }
 
     class Factory(val harbor: Harbor, val app: Application): ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
