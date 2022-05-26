@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title="List View"
-        android:id="@+id/listView"
+        android:id="@+id/bnbListView"
         android:icon="@drawable/ic_baseline_list_24"
         app:showAsAction="ifRoom"/>
     <item
         android:title="Map View"
-        android:id="@+id/mapView"
+        android:id="@+id/bnbMapView"
         android:icon="@drawable/ic_baseline_map_24"
         app:showAsAction="ifRoom"/>
     <item
         android:title="Log In"
-        android:id="@+id/logIn"
+        android:id="@+id/bnbLogIn"
         android:icon="@drawable/ic_baseline_login_24"
         app:showAsAction="ifRoom"/>
 
