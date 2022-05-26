@@ -23,6 +23,7 @@ class TideRepository(private val database: HarborsDatabase) {
         val tideDataPreParse: MutableList<TideData> = mutableListOf()
         for (i in range(0, 9))
             tideLines.removeFirst()
+        tideLines.removeLast()
         try {
             for (line in tideLines) {
                 val splitLines: MutableList<String> = line.split(" ") as MutableList<String>
