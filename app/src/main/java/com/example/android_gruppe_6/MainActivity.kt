@@ -32,20 +32,24 @@ class MainActivity : AppCompatActivity() {
             TideRepository(getDatabase(application)).insertHarbors()
         }
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
-            .build()
-        NavigationUI.setupWithNavController(myToolbar, navController, appBarConfiguration)
-
-
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.bnbListView -> findNavController(R.id.nav_host_fragment).navigate(R.id.harbourlistFragment)
-                R.id.bnbMapView -> findNavController(R.id.nav_host_fragment).navigate(R.id.mapsFragment)
-                R.id.bnbLogIn -> findNavController(R.id.nav_host_fragment).navigate(R.id.loginFragment)
+                R.id.bnbListView -> {
+                    val nav = findNavController(R.id.nav_host_fragment)
+                    nav.popBackStack()
+                    nav.navigate(R.id.harbourlistFragment)
+                }
+                R.id.bnbMapView -> {
+                    val nav = findNavController(R.id.nav_host_fragment)
+                    nav.popBackStack()
+                    nav.navigate(R.id.mapsFragment)
+                }
+                R.id.bnbLogIn -> {
+                    val nav = findNavController(R.id.nav_host_fragment)
+                    nav.popBackStack()
+                    nav.navigate(R.id.loginFragment)
+                }
                 else -> false
             }
             true
