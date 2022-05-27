@@ -6,18 +6,9 @@
     app:startDestination="@id/harbourlistFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.android_gruppe_6.ui.main.MainFragment"
-        android:label="main_fragment"
-        tools:layout="@layout/main_fragment" />
-    <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.android_gruppe_6.LoginFragment"
         android:label="fragment_login" />
-    <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="com.example.android_gruppe_6.WelcomeFragment"
-        android:label="fragment_welcome" />
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.example.android_gruppe_6.MapsFragment"
@@ -49,6 +40,6 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.android_gruppe_6.SettingsFragment"
+        android:name="com.example.android_gruppe_6.harborlist.SettingsFragment"
         android:label="SettingsFragment" />
 </navigation>

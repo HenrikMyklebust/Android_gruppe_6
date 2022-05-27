@@ -1,7 +1,8 @@
-package com.example.android_gruppe_6
+package com.example.android_gruppe_6.harborlist
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
+import com.example.android_gruppe_6.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

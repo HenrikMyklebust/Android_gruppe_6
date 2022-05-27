@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -46,6 +47,7 @@ class ShowTideFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        findNavController()
         hideBottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
         hideBottomNav.isVisible = false
         val binding = FragmentShowTideBinding.inflate(inflater)
@@ -105,6 +107,12 @@ class ShowTideFragment : Fragment() {
                 binding.dataTitle.text = "${viewModel.harbor.name} : ${viewModel.dayOfMonth}/${viewModel.month}/${viewModel.year}"
             }
         })
+
+        viewModel.apiRequest.observe(viewLifecycleOwner) {
+            if (viewModel.apiRequest.value!!)
+                Toast.makeText(context, R.string.chartError, Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+        }
 
         binding.bottomNavTest.setOnItemSelectedListener {
             when(it.itemId) {

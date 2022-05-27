@@ -68,21 +68,7 @@ class LoginFragment : Fragment() {
         navController = findNavController()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == WelcomeFragment.SIGN_IN_RESULT_CODE) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK) {
-                // User successfully signed in.
-                Log.i(WelcomeFragment.TAG, "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
-            } else {
-                // Sign in failed. If response is null, the user canceled the
-                // sign-in flow using the back button. Otherwise, check
-                // the error code and handle the error.
-                Log.i(WelcomeFragment.TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
-            }
-        }
-    }
+
 
     /**
      * Observes the authentication state and changes the UI accordingly.
