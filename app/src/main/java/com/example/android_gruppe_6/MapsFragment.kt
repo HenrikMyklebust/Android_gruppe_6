@@ -14,17 +14,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.android_gruppe_6.domain.getHarbors
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 
 
 class MapsFragment : Fragment() {
@@ -34,12 +33,10 @@ class MapsFragment : Fragment() {
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var currentLocation: LatLng
+    private val markers = arrayListOf<Marker>()
 
     private var lastKnownLocation: Location? = null
-    private var likelyPlaceNames: Array<String?> = arrayOfNulls(0)
-    private var likelyPlaceAddresses: Array<String?> = arrayOfNulls(0)
-    private var likelyPlaceAttributions: Array<List<*>?> = arrayOfNulls(0)
-    private var likelyPlaceLatLngs: Array<LatLng?> = arrayOfNulls(0)
+    val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -52,32 +49,50 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
+        activity?.let { MapsInitializer.initialize(it) }
+        map = googleMap
+        enableMyLocation()
+
+        googleMap.setMaxZoomPreference(6.0F)
+
+        googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         val harbors = getHarbors()
         for (harbor in harbors) {
             var coordinates = LatLng(harbor.lat, harbor.lon)
-            googleMap.addMarker(MarkerOptions().position(coordinates).title("Harbour").icon(activity?.let {
-                bitmapDescriptorFromVector(
-                    it, R.drawable.ic_icon_grey)
-            }))
+            val marker = MarkerOptions().icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.ic_icon_grey)).position(coordinates).title(harbor.name).snippet(harbor.name)
+            /*marker.visible(false)*/
+            markers.add(map.addMarker(marker)!!)
+           /* val mapMarker = googleMap.addMarker(
+                MarkerOptions()
+            )*/
+
 
         }
 
+        map.setOnMarkerClickListener { marker ->
+            val harbor = harbors.find { it.name == marker.title }
+            if (harbor != null) {
+                this.findNavController().navigate(
+                    MapsFragmentDirections
+                        .actionMapsFragmentToShowTideFragment2(harbor)
+                )
+            }
 
+            true
+        }
 
 
 
         val zoomlevel = 4f
         /*getLastKnownLocation()*/
-        /*getDeviceLocation()*/
+
+
 
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, zoomlevel))
+        /*getDeviceLocation()*/
 
-        activity?.let { MapsInitializer.initialize(it) }
-        map = googleMap
-        googleMap.setMaxZoomPreference(6.0F)
-        map.setMyLocationEnabled(true)
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL)
+
     }
 
     override fun onCreateView(
@@ -85,7 +100,8 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fusedLocationClient = activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
+        fusedLocationClient =
+            activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
         return inflater.inflate(R.layout.fragment_maps, container, false)
 
     }
@@ -98,30 +114,33 @@ class MapsFragment : Fragment() {
     }
 
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray) {
+        grantResults: IntArray
+    ) {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()
-            }
+            } /*else {
+                requestLocationPermission()
+            }*/
         }
     }
 
-    private fun isPermissionGranted() : Boolean {
+    private fun isPermissionGranted(): Boolean {
         return activity?.let {
             ContextCompat.checkSelfPermission(
                 it,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         } == PackageManager.PERMISSION_GRANTED
     }
 
     @SuppressLint("MissingPermission")
     fun getLastKnownLocation() {
         fusedLocationClient.lastLocation
-            .addOnSuccessListener { location->
+            .addOnSuccessListener { location ->
                 if (location != null) {
                     currentLocation = LatLng(location.latitude, location.longitude)
                     // use your location object
@@ -147,16 +166,23 @@ class MapsFragment : Fragment() {
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.result
                             if (lastKnownLocation != null) {
-                                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(lastKnownLocation!!.latitude,
-                                        lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+                                map.moveCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(
+                                            lastKnownLocation!!.latitude,
+                                            lastKnownLocation!!.longitude
+                                        ), DEFAULT_ZOOM.toFloat()
+                                    )
+                                )
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.")
                             Log.e(TAG, "Exception: %s", task.exception)
-                            map?.moveCamera(CameraUpdateFactory
-                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
-                            map?.uiSettings?.isMyLocationButtonEnabled = false
+                            map.moveCamera(
+                                CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                            )
+                            map.uiSettings.isMyLocationButtonEnabled = false
                         }
                     }
                 }
@@ -170,8 +196,7 @@ class MapsFragment : Fragment() {
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             map.isMyLocationEnabled = true
-        }
-        else {
+        } else {
             activity?.let {
                 ActivityCompat.requestPermissions(
                     it,
@@ -182,10 +207,16 @@ class MapsFragment : Fragment() {
         }
     }
 
+    private fun requestLocationPermission() {
+        Toast.makeText(requireContext(),"Spør etter tillatelser...", Toast.LENGTH_SHORT).show()
+        requestPermissions(permissions, REQUEST_LOCATION_PERMISSION)
+    }
+
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
         return ContextCompat.getDrawable(context, vectorResId)?.run {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val bitmap =
+                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
@@ -194,16 +225,8 @@ class MapsFragment : Fragment() {
 
     companion object {
         private val TAG = "HG-LOG"
-        private const val DEFAULT_ZOOM = 15
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private const val DEFAULT_ZOOM = 4
 
-        // Keys for storing activity state.
-        // [START maps_current_place_state_keys]
-        private const val KEY_CAMERA_POSITION = "camera_position"
-        private const val KEY_LOCATION = "location"
-        // [END maps_current_place_state_keys]
 
-        // Used for selecting the current place.
-        private const val M_MAX_ENTRIES = 5
     }
 }

@@ -9,6 +9,8 @@ import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
 import com.example.android_gruppe_6.repository.TideRepository
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.*
 
 class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() {
@@ -28,6 +30,10 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private var _year: Int = 0
     val year: Int get() = _year
 
+    private val _apiRequest = MutableLiveData<Boolean>()
+    val apiRequest: LiveData<Boolean> get() = _apiRequest
+
+    private val _displayingDay = MutableLiveData<Int>()
     private val _lastEntry = MutableLiveData<Boolean>()
     val lastEntry: LiveData<Boolean> get() = _lastEntry
 
@@ -41,7 +47,6 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         _month = temp.get(MONTH)
         _year = temp.get(YEAR)
         _dataset.value = getDataset()
-
         viewModelScope.launch {
             _tides.value = getTide()
 
@@ -87,11 +92,22 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         tide = repository.getDbTide(harbor.apiName)
 
         if (tide.isNullOrEmpty()) {
-            repository.insertTides(repository.getApiTide(harbor.apiName))
-            tide = repository.getDbTide(harbor.apiName)
-        } else if (tide[26].day != getDay()) {
-            repository.insertTides(repository.getApiTide(harbor.apiName))
-            tide = repository.getDbTide(harbor.apiName)
+            try {
+                repository.insertTides(repository.getApiTide(harbor.apiName))
+                tide = repository.getDbTide(harbor.apiName)
+            }catch (e: Exception) {
+                _apiRequest.value = false
+            }
+            _apiRequest.value = true
+
+        } else if (tide[0].day != getDay()) {
+            try {
+                repository.insertTides(repository.getApiTide(harbor.apiName))
+                tide = repository.getDbTide(harbor.apiName)
+            }catch (e: Exception) {
+                _apiRequest.value = false
+            }
+            _apiRequest.value = true
         }
         return tide
     }

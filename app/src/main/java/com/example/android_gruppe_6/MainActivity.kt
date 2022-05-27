@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         val myToolbar: Toolbar = findViewById(R.id.my_toolbar)
         myToolbar.setTitle(R.string.app_name)
         setSupportActionBar(myToolbar)
+        lifecycleScope.launch {
+            TideRepository(getDatabase(application)).insertHarbors()
+        }
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
@@ -46,6 +50,5 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
     }
 }
