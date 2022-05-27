@@ -59,7 +59,10 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             if (_daysIndex == -1) {
                 _daysIndex = 0
             }
-            _dayOfMonth = _days.get(_daysIndex)
+            try {
+                _dayOfMonth = _days.get(_daysIndex)
+            }catch (e: Exception){}
+
             _dataset.value = getDataset()
         }
     }
