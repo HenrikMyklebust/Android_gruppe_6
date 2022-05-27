@@ -42,12 +42,11 @@ class ShowTideFragment : Fragment() {
             .get(ShowTideViewModel::class.java)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val hideBottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        hideBottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
         hideBottomNav.isVisible = false
         val binding = FragmentShowTideBinding.inflate(inflater)
         binding.lifecycleOwner = this
@@ -110,10 +109,8 @@ class ShowTideFragment : Fragment() {
         binding.bottomNavTest.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
-                R.id.bnbPopShowTide -> {
-                    findNavController().popBackStack()
-                    hideBottomNav.isVisible = true
-                }
+                R.id.bnbPopShowTide -> findNavController().popBackStack()
+
                 R.id.bnbPreviousDay -> viewModel.showPreviousDay()
                 else -> false
             }
@@ -122,6 +119,11 @@ class ShowTideFragment : Fragment() {
 
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideBottomNav.isVisible = true
     }
 
 
