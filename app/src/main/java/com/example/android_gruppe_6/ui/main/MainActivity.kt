@@ -22,8 +22,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        val appBarConfiguration: AppBarConfiguration =
-            AppBarConfiguration.Builder(navController.graph).build()
+        val appBarConfiguration =
+            AppBarConfiguration(setOf(
+                R.id.mapsFragment,
+                R.id.harbourlistFragment,
+                R.id.loginFragment,
+                R.id.showTideFragment,
+                R.id.settingsFragment
+            ))
 
         val myToolbar: Toolbar = findViewById(R.id.my_toolbar)
         NavigationUI.setupWithNavController(myToolbar, navController, appBarConfiguration)
