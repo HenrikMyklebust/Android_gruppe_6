@@ -25,13 +25,14 @@
             tools:context=".LoginFragment">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:text="@string/login_prompt"
-                android:textAlignment="center"
-                android:textSize="30sp"/>
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:text="@string/login_prompt"
+            android:textAlignment="center"
+            android:textSize="30sp" />
 
         <TextView
                 android:id="@+id/auth_button"
