@@ -82,6 +82,8 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         var tide: List<TideData>
 
         tide = repository.getDbTide(harbor.apiName)
+        val temp = mutableListOf<Int>()
+
         if (tide.isNullOrEmpty()) {
             repository.insertTides(repository.getApiTide(harbor.apiName))
             tide = repository.getDbTide(harbor.apiName)
