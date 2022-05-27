@@ -56,16 +56,13 @@ class MapsFragment : Fragment() {
         val harbors = getHarbors()
         for (harbor in harbors) {
             var coordinates = LatLng(harbor.lat, harbor.lon)
-            val marker = MarkerOptions().position(coordinates)
-            marker.visible(false)
+            val marker = MarkerOptions().icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.ic_icon_grey)).position(coordinates).title(harbor.name).snippet(harbor.name)
+            /*marker.visible(false)*/
             markers.add(map.addMarker(marker)!!)
-            googleMap.addMarker(
-                MarkerOptions().position(coordinates).title(harbor.name).icon(activity?.let {
-                    bitmapDescriptorFromVector(
-                        it, R.drawable.ic_icon_grey
-                    )
-                })
-            )
+           /* val mapMarker = googleMap.addMarker(
+                MarkerOptions()
+            )*/
+
 
         }
 
@@ -80,18 +77,16 @@ class MapsFragment : Fragment() {
 
             true
         }
-        /*    val yourClickHandler = GoogleMap.OnMarkerClickListener {
-                markerClickHandler(marker = it)
-                return@OnMarkerClickListener false
-            }*/
+
 
 
         val zoomlevel = 4f
         /*getLastKnownLocation()*/
-        /*getDeviceLocation()*/
+
 
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, zoomlevel))
+        getDeviceLocation()
 
 
     }
@@ -219,16 +214,8 @@ class MapsFragment : Fragment() {
 
     companion object {
         private val TAG = "HG-LOG"
-        private const val DEFAULT_ZOOM = 15
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private const val DEFAULT_ZOOM = 4
 
-        // Keys for storing activity state.
-        // [START maps_current_place_state_keys]
-        private const val KEY_CAMERA_POSITION = "camera_position"
-        private const val KEY_LOCATION = "location"
-        // [END maps_current_place_state_keys]
 
-        // Used for selecting the current place.
-        private const val M_MAX_ENTRIES = 5
     }
 }
