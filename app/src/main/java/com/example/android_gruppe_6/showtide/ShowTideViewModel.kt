@@ -2,6 +2,7 @@ package com.example.android_gruppe_6.showtide
 
 import android.app.Application
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.lifecycle.*
 import com.anychart.AnyChart
 import com.anychart.chart.common.dataentry.DataEntry
@@ -22,7 +23,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     val tides: LiveData<List<TideData>> get() = _tides
 
     private val days = mutableListOf<Int>()
-    private var daysIndex: Int = 0
+    private var _daysIndex: Int = 0
     private var updateDays: Boolean = false
 
     private var day: Int = 0
@@ -49,13 +50,21 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     }
 
     fun showNextDay() {
-        if (daysIndex < days.size) {
-            daysIndex += 1
+        if (_daysIndex < days.size) {
+            Log.d("WTF", _daysIndex.toString())
+            _daysIndex = _daysIndex.plus(1)
+            Log.d("WTF", _daysIndex.toString())
+
+            _cartesian.value = makeCartesian()
         }
     }
 
-    fun showPreciousDay(): String {
-        return "PreviousDay"
+    fun showPreviousDay() {
+        if (_daysIndex > 0){
+            _daysIndex -= 1
+            _cartesian.value = makeCartesian()
+        }
+
     }
 
     fun getDay(): Int {
@@ -71,7 +80,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         if (tide.isNullOrEmpty()) {
             repository.insertTides(repository.getApiTide(harbor.apiName))
             tide = repository.getDbTide(harbor.apiName)
-        } else if (tide[0].day != getDay()) {
+        } else if (tide[26].day != getDay()) {
             repository.insertTides(repository.getApiTide(harbor.apiName))
             tide = repository.getDbTide(harbor.apiName)
         }
@@ -102,15 +111,15 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
         if (updateDays) {
             days.clear()
-            daysIndex = 0
+            _daysIndex = 0
             month = tides.value!![0].month
         }
 
         for (x in _tides.value.orEmpty()) {
-            if (updateDays) {
+            if ((updateDays) && (x.day !in days)) {
                 days.add(x.day)
             }
-            if (x.day == days[daysIndex]) {
+            if (x.day == days[_daysIndex]) {
                 seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
             }
         }
@@ -118,7 +127,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             updateDays = false
         }
 
-        cartesian.title("Tide for ${harbor.name}: ${days[daysIndex]}/$month")
+        cartesian.title("Tide for ${harbor.name}: ${days[_daysIndex]}/$month")
 
         val set = Set.instantiate()
         set.data(seriesData)

@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title="Previous Day"
-        android:id="@+id/previousDay"
+        android:id="@+id/bnbPreviousDay"
         android:icon="@drawable/ic_baseline_arrow_back_ios_24"
         app:showAsAction="ifRoom"/>
     <item
         android:title="Close"
-        android:id="@+id/popShowTide"
+        android:id="@+id/bnbPopShowTide"
         android:icon="@drawable/ic_baseline_close_24"
         app:showAsAction="ifRoom"/>
     <item
         android:title="Next day"
-        android:id="@+id/nextDay"
+        android:id="@+id/bnbNextDay"
         android:icon="@drawable/ic_baseline_arrow_forward_ios_24"
         app:showAsAction="ifRoom"/>
 

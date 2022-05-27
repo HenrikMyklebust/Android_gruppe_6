@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.DataEntry
@@ -20,6 +21,7 @@ import com.anychart.enums.Anchor
 import com.anychart.enums.MarkerType
 import com.anychart.enums.TooltipPositionMode
 import com.anychart.graphics.vector.Stroke
+import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.databinding.FragmentShowTideBinding
 import com.example.android_gruppe_6.domain.Harbor
 
@@ -51,6 +53,15 @@ class ShowTideFragment : Fragment() {
                 binding.anyChartView.setChart(viewModel.cartesian.value)
             }
         })
+        binding.bottomNavTest.setOnItemSelectedListener {
+            when(it.itemId) {
+                R.id.bnbNextDay -> viewModel.showNextDay()
+                R.id.bnbPopShowTide -> findNavController().popBackStack()
+                R.id.bnbPreviousDay -> viewModel.showPreviousDay()
+                else -> false
+            }
+            true
+        }
 
 
         // Inflate the layout for this fragment
