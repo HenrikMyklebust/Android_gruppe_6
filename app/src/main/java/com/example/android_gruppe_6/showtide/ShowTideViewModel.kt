@@ -101,7 +101,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             }catch (e: Exception) {
                 _apiRequest.value = false
             }
-            _apiRequest.value = true
+            //_apiRequest.value = true
 
         } else if (tide[0].day != getDay()) {
             try {
@@ -110,7 +110,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             }catch (e: Exception) {
                 _apiRequest.value = false
             }
-            _apiRequest.value = true
+            //_apiRequest.value = true
         }
         return tide
     }

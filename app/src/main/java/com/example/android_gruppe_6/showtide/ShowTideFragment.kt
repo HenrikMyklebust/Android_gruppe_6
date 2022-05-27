@@ -109,7 +109,7 @@ class ShowTideFragment : Fragment() {
         })
 
         viewModel.apiRequest.observe(viewLifecycleOwner) {
-            if (viewModel.apiRequest.value!!)
+            if (!viewModel.apiRequest.value!!)
                 Toast.makeText(context, R.string.chartError, Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
         }
