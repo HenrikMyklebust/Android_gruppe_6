@@ -47,7 +47,6 @@ class ShowTideFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        findNavController()
         hideBottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
         hideBottomNav.isVisible = false
         val binding = FragmentShowTideBinding.inflate(inflater)
@@ -104,7 +103,12 @@ class ShowTideFragment : Fragment() {
             if (it != null) {
                 APIlib.getInstance().setActiveAnyChartView(binding.anyChartView)
                 set.data(viewModel.dataset.value)
-                binding.dataTitle.text = "${viewModel.harbor.name} : ${viewModel.dayOfMonth}/${viewModel.month}/${viewModel.year}"
+            }
+        })
+        viewModel.dayOfMonth.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                binding.dataTitle.text = "${viewModel.harbor.name} : ${viewModel.dayOfMonth.value}" +
+                        "/${viewModel.month.value}/${viewModel.year.value}"
             }
         })
 
@@ -114,12 +118,11 @@ class ShowTideFragment : Fragment() {
                 findNavController().popBackStack()
         }
 
-        binding.bottomNavTest.setOnItemSelectedListener {
+        binding.navShowTides.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
                 R.id.bnbPopShowTide -> findNavController().popBackStack()
                 R.id.bnbPreviousDay -> viewModel.showPreviousDay()
-                else -> false
             }
             true
         }
