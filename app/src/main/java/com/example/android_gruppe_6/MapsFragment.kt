@@ -51,9 +51,10 @@ class MapsFragment : Fragment() {
          */
         activity?.let { MapsInitializer.initialize(it) }
         map = googleMap
+        enableMyLocation()
 
         googleMap.setMaxZoomPreference(6.0F)
-        enableMyLocation()
+
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         val harbors = getHarbors()
         for (harbor in harbors) {
@@ -86,9 +87,10 @@ class MapsFragment : Fragment() {
         /*getLastKnownLocation()*/
 
 
+
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, zoomlevel))
-        getDeviceLocation()
+        /*getDeviceLocation()*/
 
 
     }
@@ -120,9 +122,9 @@ class MapsFragment : Fragment() {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()
-            } else {
+            } /*else {
                 requestLocationPermission()
-            }
+            }*/
         }
     }
 
