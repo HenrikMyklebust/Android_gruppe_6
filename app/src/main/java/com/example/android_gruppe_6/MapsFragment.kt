@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -23,7 +24,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import java.lang.Exception
 
 
 class MapsFragment : Fragment() {
@@ -36,6 +36,7 @@ class MapsFragment : Fragment() {
     private val markers = arrayListOf<Marker>()
 
     private var lastKnownLocation: Location? = null
+    val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -52,11 +53,7 @@ class MapsFragment : Fragment() {
         map = googleMap
 
         googleMap.setMaxZoomPreference(6.0F)
-        try {
-            map.isMyLocationEnabled = true
-        }
-        catch (e: Exception) {}
-
+        enableMyLocation()
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         val harbors = getHarbors()
         for (harbor in harbors) {
@@ -123,6 +120,8 @@ class MapsFragment : Fragment() {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()
+            } else {
+                requestLocationPermission()
             }
         }
     }
@@ -204,6 +203,11 @@ class MapsFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun requestLocationPermission() {
+        Toast.makeText(requireContext(),"Spør etter tillatelser...", Toast.LENGTH_SHORT).show()
+        requestPermissions(permissions, REQUEST_LOCATION_PERMISSION)
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
