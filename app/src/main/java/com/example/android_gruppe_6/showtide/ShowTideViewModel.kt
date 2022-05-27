@@ -23,12 +23,12 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private val _dataset = MutableLiveData<List<DataEntry>>()
     val dataset: LiveData<List<DataEntry>> = _dataset
 
-    private var _dayOfMonth: Int = 0
-    val dayOfMonth: Int get() = _dayOfMonth
-    private var _month: Int = 0
-    val month: Int get() = _month
-    private var _year: Int = 0
-    val year: Int get() = _year
+    private val _dayOfMonth = MutableLiveData<Int>()
+    val dayOfMonth: LiveData<Int> get() = _dayOfMonth
+    private val _month = MutableLiveData<Int>()
+    val month: LiveData<Int> get() = _month
+    private val _year = MutableLiveData<Int>()
+    val year: LiveData<Int> get() = _year
 
     private val _apiRequest = MutableLiveData<Boolean>()
     val apiRequest: LiveData<Boolean> get() = _apiRequest
@@ -44,8 +44,8 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
     init {
         val temp = Calendar.getInstance()
-        _month = temp.get(MONTH)
-        _year = temp.get(YEAR)
+        _month.value = temp.get(MONTH)
+        _year.value = temp.get(YEAR)
         _dataset.value = getDataset()
         viewModelScope.launch {
             _tides.value = getTide()
@@ -59,7 +59,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             if (_daysIndex == -1) {
                 _daysIndex = 0
             }
-            _dayOfMonth = _days.get(_daysIndex)
+            _dayOfMonth.value = _days.get(_daysIndex)
             _dataset.value = getDataset()
         }
     }
@@ -68,7 +68,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         if (_daysIndex < _days.size - 1) {
             _daysIndex += 1
             _dataset.value = getDataset()
-            _dayOfMonth = _days[_daysIndex]
+            _dayOfMonth.value = _days[_daysIndex]
         }
     }
 
@@ -76,7 +76,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         if (_daysIndex > 0){
             _daysIndex -= 1
             _dataset.value = getDataset()
-            _dayOfMonth = _days[_daysIndex]
+            _dayOfMonth.value = _days[_daysIndex]
         }
 
     }
@@ -121,8 +121,8 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         for (x in _tides.value.orEmpty()) {
             if (x.day == _days[_daysIndex]) {
                 seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
-                if (x.month != _month) {
-                    _month = x.month
+                if (x.month != _month.value) {
+                    _month.value = x.month
                 }
             }
         }
