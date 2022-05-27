@@ -111,7 +111,7 @@ class ShowTideFragment : Fragment() {
             }
         })
 
-        binding.bottomNavTest.setOnItemSelectedListener {
+        binding.navShowTides.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
                 R.id.bnbPopShowTide -> findNavController().popBackStack()

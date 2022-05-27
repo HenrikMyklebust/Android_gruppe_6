@@ -26,4 +26,6 @@
     <string name="menuSettings">Settings</string>
     <string name="settingsShowLonLat">Hide lon and lat values</string>
     <string name="settingsShowHide">Show / Hide</string>
+    <string name="noMoreDaysToShow">No more data available</string>
+    <string name="noDaysBefore">Earlier days are not available</string>
 </resources>

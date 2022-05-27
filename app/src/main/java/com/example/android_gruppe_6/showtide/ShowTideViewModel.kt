@@ -2,8 +2,10 @@ package com.example.android_gruppe_6.showtide
 
 import android.app.Application
 import android.icu.util.Calendar
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.anychart.chart.common.dataentry.DataEntry
+import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.database.getDatabase
 import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
@@ -70,6 +72,9 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             _dataset.value = getDataset()
             _dayOfMonth.value = _days[_daysIndex]
         }
+        else {
+            Toast.makeText(app.applicationContext, app.getText(R.string.noMoreDaysToShow), Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun showPreviousDay() {
@@ -77,6 +82,9 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             _daysIndex -= 1
             _dataset.value = getDataset()
             _dayOfMonth.value = _days[_daysIndex]
+        }
+        else {
+            Toast.makeText(app.applicationContext, app.getText(R.string.noDaysBefore), Toast.LENGTH_SHORT).show()
         }
 
     }
