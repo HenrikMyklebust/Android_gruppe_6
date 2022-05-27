@@ -26,12 +26,15 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private var _daysIndex: Int = 0
     private var updateDays: Boolean = false
 
-    private var day: Int = 0
-    private var month: Int = 0
-    private var year: Int = 0
+    private val _dataset = MutableLiveData<List<DataEntry>>()
+    val dataset: LiveData<List<DataEntry>> = _dataset
 
-    private val _cartesian = MutableLiveData<Cartesian>()
-    val cartesian: LiveData<Cartesian> get() = _cartesian
+    private var _dayOfMonth: Int = 0
+    val dayOfMonth: Int get() = _dayOfMonth
+    private var _month: Int = 0
+    val month: Int get() = _month
+    private var _year: Int = 0
+    val year: Int get() = _year
 
     private val _displayingDay = MutableLiveData<Int>()
 
@@ -39,30 +42,28 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
     init {
         val temp = Calendar.getInstance()
-        day = temp.get(DAY_OF_MONTH)
-        month = temp.get(MONTH)
-        year = temp.get(YEAR)
+        _dayOfMonth = temp.get(DAY_OF_MONTH)
+        _month = temp.get(MONTH)
+        _year = temp.get(YEAR)
+        _dataset.value = getDataset()
 
         viewModelScope.launch {
             _tides.value = getTide()
-            _cartesian.value = makeCartesian()
+            _dataset.value = getDataset()
         }
     }
 
     fun showNextDay() {
         if (_daysIndex < days.size) {
-            Log.d("WTF", _daysIndex.toString())
             _daysIndex = _daysIndex.plus(1)
-            Log.d("WTF", _daysIndex.toString())
-
-            _cartesian.value = makeCartesian()
+            _dataset.value = getDataset()
         }
     }
 
     fun showPreviousDay() {
         if (_daysIndex > 0){
             _daysIndex -= 1
-            _cartesian.value = makeCartesian()
+            _dataset.value = getDataset()
         }
 
     }
@@ -87,78 +88,34 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         return tide
     }
 
-    fun nextDay() {
-        _displayingDay.value = _displayingDay.value?.plus(1)
-    }
-
-    private fun makeCartesian() : Cartesian {
-        val cartesian : Cartesian = AnyChart.line()
-
-        cartesian.animation(true)
-        cartesian.padding(10, 20, 5, 20)
-
-        cartesian.crosshair().enabled(true)
-        cartesian.crosshair().yLabel(true).yStroke()
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
-
-        cartesian.yAxis(0).title("Meter")
-        cartesian.xAxis(0).title("Hour")
-        cartesian.xAxis(0).labels().padding(5, 5, 5, 5)
-
-
+    private fun getDataset() : List<DataEntry>{
         val seriesData = mutableListOf<DataEntry>()
-
+        if (_tides.value == null) {
+            seriesData.add(CustomDataEntry("0", 0, 0,0))
+            return seriesData
+        }
         if (updateDays) {
             days.clear()
             _daysIndex = 0
-            month = tides.value!![0].month
+            _month = tides.value!![0].month
         }
-
         for (x in _tides.value.orEmpty()) {
             if ((updateDays) && (x.day !in days)) {
                 days.add(x.day)
             }
             if (x.day == days[_daysIndex]) {
                 seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
+                if (x.month != _month) {
+                    _month = x.month
+                }
             }
         }
         if (updateDays) {
             updateDays = false
         }
-
-        cartesian.title("Tide for ${harbor.name}: ${days[_daysIndex]}/$month")
-
-        val set = Set.instantiate()
-        set.data(seriesData)
-        val series1Mapping = set.mapAs("{x: 'x', value: 'value' }")
-        val series2Mapping = set.mapAs("{x: 'x', value: 'value2' }")
-        val series3Mapping = set.mapAs("{x: 'x', value: 'value3' }")
-
-        val series1 = cartesian.line(series1Mapping)
-        series1.name("Total")
-        series1.hovered().markers().enabled(true)
-        series1.hovered().markers().type(MarkerType.CIRCLE).size(4)
-        series1.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
-
-        val series2 = cartesian.line(series2Mapping)
-        series2.name("Tide")
-        series2.hovered().markers().enabled(true)
-        series2.hovered().markers().type(MarkerType.CIRCLE).size(4)
-        series2.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
-
-        val series3 = cartesian.line(series3Mapping)
-        series3.name("Storm Surge")
-        series3.hovered().markers().enabled(true)
-        series3.hovered().markers().type(MarkerType.CIRCLE).size(4)
-        series3.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
-
-        cartesian.legend().enabled(true)
-        cartesian.legend().fontSize(13)
-        cartesian.legend().padding(0, 0, 10, 0)
-
-        return cartesian
+        return seriesData
     }
+
 
     class Factory(val harbor: Harbor, val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

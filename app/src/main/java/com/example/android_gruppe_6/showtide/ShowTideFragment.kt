@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.anychart.APIlib
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.DataEntry
@@ -37,6 +38,7 @@ class ShowTideFragment : Fragment() {
     }
 
 
+    private lateinit var data: List<DataEntry>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,13 +48,59 @@ class ShowTideFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        val set: Set = Set.instantiate()
+        set.data(viewModel.dataset.value)
+        val cartesian : Cartesian = AnyChart.line()
+        val series1Mapping = set.mapAs("{x: 'x', value: 'value' }")
+        val series2Mapping = set.mapAs("{x: 'x', value: 'value2' }")
+        val series3Mapping = set.mapAs("{x: 'x', value: 'value3' }")
+
+
         binding.anyChartView.setProgressBar(binding.progressBar)
 
-        viewModel.cartesian.observe(viewLifecycleOwner, Observer {
+        cartesian.animation(true)
+        cartesian.padding(10, 20, 5, 20)
+
+        cartesian.crosshair().enabled(true)
+        cartesian.crosshair().yLabel(true).yStroke()
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
+
+        cartesian.yAxis(0).title("Meter")
+        cartesian.xAxis(0).title("Hour")
+        cartesian.xAxis(0).labels().padding(5, 5, 5, 5)
+
+        val series1 = cartesian.line(series1Mapping)
+        series1.name("Total")
+        series1.hovered().markers().enabled(true)
+        series1.hovered().markers().type(MarkerType.CIRCLE).size(4)
+        series1.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
+
+        val series2 = cartesian.line(series2Mapping)
+        series2.name("Tide")
+        series2.hovered().markers().enabled(true)
+        series2.hovered().markers().type(MarkerType.CIRCLE).size(4)
+        series2.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
+
+        val series3 = cartesian.line(series3Mapping)
+        series3.name("Storm Surge")
+        series3.hovered().markers().enabled(true)
+        series3.hovered().markers().type(MarkerType.CIRCLE).size(4)
+        series3.tooltip().position("right").anchor(Anchor.LEFT_CENTER).offsetX(5).offsetY(5)
+
+        cartesian.legend().enabled(true)
+        cartesian.legend().fontSize(13)
+        cartesian.legend().padding(0, 0, 10, 0)
+
+        binding.anyChartView.setChart(cartesian)
+
+        viewModel.dataset.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                binding.anyChartView.setChart(viewModel.cartesian.value)
+                APIlib.getInstance().setActiveAnyChartView(binding.anyChartView)
+                set.data(viewModel.dataset.value)
             }
         })
+
         binding.bottomNavTest.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
@@ -62,7 +110,6 @@ class ShowTideFragment : Fragment() {
             }
             true
         }
-
 
         // Inflate the layout for this fragment
         return binding.root
