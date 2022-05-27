@@ -7,17 +7,13 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.location.Location
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.android_gruppe_6.domain.getHarbors
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,12 +55,17 @@ class MapsFragment : Fragment() {
         val harbors = getHarbors()
         for (harbor in harbors) {
             var coordinates = LatLng(harbor.lat, harbor.lon)
-            val marker = MarkerOptions().icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.ic_icon_grey)).position(coordinates).title(harbor.name).snippet(harbor.name)
+            val marker = MarkerOptions().icon(
+                bitmapDescriptorFromVector(
+                    requireActivity(),
+                    R.drawable.ic_icon_grey
+                )
+            ).position(coordinates).title(harbor.name).snippet(harbor.name)
             /*marker.visible(false)*/
             markers.add(map.addMarker(marker)!!)
-           /* val mapMarker = googleMap.addMarker(
-                MarkerOptions()
-            )*/
+            /* val mapMarker = googleMap.addMarker(
+                 MarkerOptions()
+             )*/
 
 
         }
@@ -82,10 +83,7 @@ class MapsFragment : Fragment() {
         }
 
 
-
         val zoomlevel = 4f
-        /*getLastKnownLocation()*/
-
 
 
         /*googleMap.addMarker(MarkerOptions().position(stroemsund).title("Marker in Stroemsund"))*/
@@ -137,26 +135,13 @@ class MapsFragment : Fragment() {
         } == PackageManager.PERMISSION_GRANTED
     }
 
-    @SuppressLint("MissingPermission")
-    fun getLastKnownLocation() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    currentLocation = LatLng(location.latitude, location.longitude)
-                    // use your location object
-                    // get latitude , longitude and other info from this
-                }
 
-            }
-
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getDeviceLocation() {
-        /*
+    /*  @SuppressLint("MissingPermission")
+      private fun getDeviceLocation() {
+          *//*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
-         */
+         *//*
         try {
             if (locationPermissionGranted) {
                 val locationResult = fusedLocationClient.lastLocation
@@ -190,7 +175,7 @@ class MapsFragment : Fragment() {
         } catch (e: SecurityException) {
             Log.e("Exception: %s", e.message, e)
         }
-    }
+    }*/
 
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
@@ -207,10 +192,6 @@ class MapsFragment : Fragment() {
         }
     }
 
-    private fun requestLocationPermission() {
-        Toast.makeText(requireContext(),"Spør etter tillatelser...", Toast.LENGTH_SHORT).show()
-        requestPermissions(permissions, REQUEST_LOCATION_PERMISSION)
-    }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
         return ContextCompat.getDrawable(context, vectorResId)?.run {
@@ -223,10 +204,10 @@ class MapsFragment : Fragment() {
     }
 
 
-    companion object {
-        private val TAG = "HG-LOG"
-        private const val DEFAULT_ZOOM = 4
+    /*   companion object {
+           private val TAG = "HG-LOG"
+           private const val DEFAULT_ZOOM = 4
 
 
-    }
+       }*/
 }
