@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/dataTitle"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:id="@+id/anyChartView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavTest"
+            app:layout_constraintBottom_toTopOf="@id/navShowTides"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dataTitle" />
@@ -37,18 +37,21 @@
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavTest"
+            app:layout_constraintBottom_toTopOf="@id/navShowTides"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavTest"
+            android:id="@+id/navShowTides"
             app:menu="@menu/bottom_nav_show_tide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/cardview_dark_background"
+            app:itemTextColor="@drawable/show_tide_item_selector"
+            app:itemIconTint="@drawable/show_tide_item_selector"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
