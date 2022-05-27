@@ -2,7 +2,6 @@ package com.example.android_gruppe_6.showtide
 
 import android.app.Application
 import android.icu.util.Calendar
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.anychart.chart.common.dataentry.DataEntry
 import com.example.android_gruppe_6.database.getDatabase
@@ -10,9 +9,9 @@ import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
 import com.example.android_gruppe_6.repository.TideRepository
 import kotlinx.coroutines.launch
-import java.util.Calendar.*
 import java.lang.Exception
 import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.*
 
 class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() {
     private val _tides = MutableLiveData<List<TideData>>()
@@ -31,15 +30,15 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private var _year: Int = 0
     val year: Int get() = _year
 
+    private val _apiRequest = MutableLiveData<Boolean>()
+    val apiRequest: LiveData<Boolean> get() = _apiRequest
+
+    private val _displayingDay = MutableLiveData<Int>()
     private val _lastEntry = MutableLiveData<Boolean>()
     val lastEntry: LiveData<Boolean> get() = _lastEntry
 
     private val _firstEntry = MutableLiveData<Boolean>()
     val firstEntry: LiveData<Boolean> get() = _firstEntry
-    private val _apiRequest = MutableLiveData<Boolean>()
-    val apiRequest: LiveData<Boolean> get() = _apiRequest
-
-    private val _displayingDay = MutableLiveData<Int>()
 
     private val repository = TideRepository(getDatabase(app.applicationContext))
 
@@ -48,7 +47,6 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         _month = temp.get(MONTH)
         _year = temp.get(YEAR)
         _dataset.value = getDataset()
-
         viewModelScope.launch {
             _tides.value = getTide()
 
