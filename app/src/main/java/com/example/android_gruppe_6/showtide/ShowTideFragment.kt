@@ -110,7 +110,6 @@ class ShowTideFragment : Fragment() {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
                 R.id.bnbPopShowTide -> findNavController().popBackStack()
-
                 R.id.bnbPreviousDay -> viewModel.showPreviousDay()
                 else -> false
             }
