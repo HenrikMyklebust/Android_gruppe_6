@@ -23,6 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import java.lang.Exception
 
 
 class MapsFragment : Fragment() {
@@ -51,7 +52,11 @@ class MapsFragment : Fragment() {
         map = googleMap
 
         googleMap.setMaxZoomPreference(6.0F)
-        map.isMyLocationEnabled = true
+        try {
+            map.isMyLocationEnabled = true
+        }
+        catch (e: Exception) {}
+
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         val harbors = getHarbors()
         for (harbor in harbors) {

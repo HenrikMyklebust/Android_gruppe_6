@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.DataEntry
@@ -20,6 +22,7 @@ import com.anychart.enums.Anchor
 import com.anychart.enums.MarkerType
 import com.anychart.enums.TooltipPositionMode
 import com.anychart.graphics.vector.Stroke
+import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.databinding.FragmentShowTideBinding
 import com.example.android_gruppe_6.domain.Harbor
 
@@ -49,6 +52,13 @@ class ShowTideFragment : Fragment() {
         viewModel.cartesian.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 binding.anyChartView.setChart(viewModel.cartesian.value)
+            }
+        })
+
+        viewModel.apiRequest.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                Toast.makeText(context, R.string.chartError, Toast.LENGTH_LONG).show()
+                findNavController().popBackStack()
             }
         })
 
