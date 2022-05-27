@@ -1,13 +1,12 @@
 package com.example.android_gruppe_6.harborlist
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.databinding.FragmentHarbourlistBinding
 
 class HarborlistFragment : Fragment() {
@@ -39,5 +38,19 @@ class HarborlistFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.settings_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.menuSettings -> {
+                val action = HarborlistFragmentDirections.actionHarbourlistFragmentToSettingsFragment()
+                findNavController().navigate(action)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

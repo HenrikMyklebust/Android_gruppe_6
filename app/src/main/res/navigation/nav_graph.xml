@@ -43,5 +43,12 @@
         <action
             android:id="@+id/action_harbourlistFragment_to_showTideFragment"
             app:destination="@id/showTideFragment" />
+        <action
+            android:id="@+id/action_harbourlistFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.android_gruppe_6.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>
