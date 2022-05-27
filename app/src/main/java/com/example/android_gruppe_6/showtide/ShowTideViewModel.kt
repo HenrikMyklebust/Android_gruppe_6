@@ -70,7 +70,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     }
 
     fun showNextDay() {
-        if (_daysIndex < _days.size - 1) {
+        if (_daysIndex < _days.size - 2) {
             _daysIndex += 1
             _dataset.value = getDataset()
             _dayOfMonth.value = _days[_daysIndex]
