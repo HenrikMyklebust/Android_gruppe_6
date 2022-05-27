@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Android_gruppe_6</string>
-    <string name="welcome_message_authed">Hi %1$s! Did you know that %2$s.</string>
+    <string name="welcome_message_authed">Hei %1$s! Velkommen til Tidevann!.</string>
     <string name="login_button_text">Login</string>
     <string name="logout_button_text">Logout</string>
-    <string name="login_prompt">Login to set customizations!</string>
+    <string name="login_prompt">Logg inn for å lagre innstillinger!</string>
+    <string name="welcome">Velkommen til Tidevann!</string>
     <string name="login_btn">Login</string>
     <string name="tidevann">Tidevann</string>
     <!-- TODO: Remove or change this placeholder text -->

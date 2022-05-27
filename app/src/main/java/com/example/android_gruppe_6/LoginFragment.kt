@@ -26,6 +26,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.android_gruppe_6.databinding.FragmentLoginBinding
@@ -44,25 +45,79 @@ class LoginFragment : Fragment() {
     private val viewModel by viewModels<LoginViewModel>()
 
     private lateinit var navController: NavController
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
         // Inflate the layout for this fragment.
-        val binding = DataBindingUtil.inflate<FragmentLoginBinding>(
+        binding = DataBindingUtil.inflate<FragmentLoginBinding>(
             inflater, R.layout.fragment_login, container, false
         )
 
-        binding.authButton.setOnClickListener { launchSignInFlow() }
+       /* binding.authButton.setOnClickListener { launchSignInFlow() }*/
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeAuthenticationState()
 
         navController = findNavController()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == WelcomeFragment.SIGN_IN_RESULT_CODE) {
+            val response = IdpResponse.fromResultIntent(data)
+            if (resultCode == Activity.RESULT_OK) {
+                // User successfully signed in.
+                Log.i(WelcomeFragment.TAG, "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
+            } else {
+                // Sign in failed. If response is null, the user canceled the
+                // sign-in flow using the back button. Otherwise, check
+                // the error code and handle the error.
+                Log.i(WelcomeFragment.TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
+            }
+        }
+    }
+
+    /**
+     * Observes the authentication state and changes the UI accordingly.
+     * If there is a logged in user: (1) show a logout button and (2) display their name.
+     * If there is no logged in user: show a login button
+     */
+    private fun observeAuthenticationState() {
+        /*val factToDisplay = viewModel.getFactToDisplay(requireContext())*/
+
+        //  Use the authenticationState variable from LoginViewModel to update the UI
+        //  accordingly.
+        viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+            when (authenticationState) {
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                    /*binding.welcomeText.text = getFactWithPersonalization(factToDisplay)*/
+                    binding.authButton.text = getString(R.string.logout_button_text)
+                    binding.tvLogin.text = getString(R.string.welcome)
+                    binding.authButton.setOnClickListener {
+                        AuthUI.getInstance().signOut(requireContext())
+
+                    }
+
+                }
+
+                else -> {
+
+                    /*binding.welcomeText.text = factToDisplay*/
+                    binding.authButton.text = getString(R.string.login_button_text)
+                    binding.tvLogin.text = getString(R.string.login_prompt)
+                    binding.authButton.setOnClickListener { launchSignInFlow() }
+
+                }
+            }
+        })
+
     }
 
     private fun launchSignInFlow() {
@@ -80,24 +135,5 @@ class LoginFragment : Fragment() {
             ).build(), SIGN_IN_RESULT_CODE
         )
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SIGN_IN_RESULT_CODE) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in user.
-                Log.i(
-                    TAG,
-                    "Successfully signed in user " +
-                            "${FirebaseAuth.getInstance().currentUser?.displayName}!"
-                )
-            } else {
-                // Sign in failed. If response is null the user canceled the sign-in flow using
-                // the back button. Otherwise check response.getError().getErrorCode() and handle
-                // the error.
-                Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
-            }
-        }
-    }
 }
+
