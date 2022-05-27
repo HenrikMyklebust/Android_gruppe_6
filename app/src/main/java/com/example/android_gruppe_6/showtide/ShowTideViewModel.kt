@@ -36,7 +36,11 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private var _year: Int = 0
     val year: Int get() = _year
 
-    private val _displayingDay = MutableLiveData<Int>()
+    private val _lastEntry = MutableLiveData<Boolean>()
+    val lastEntry: LiveData<Boolean> get() = _lastEntry
+
+    private val _firstEntry = MutableLiveData<Boolean>()
+    val firstEntry: LiveData<Boolean> get() = _firstEntry
 
     private val repository = TideRepository(getDatabase(app.applicationContext))
 
@@ -54,8 +58,8 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     }
 
     fun showNextDay() {
-        if (_daysIndex < days.size) {
-            _daysIndex = _daysIndex.plus(1)
+        if (_daysIndex < days.size - 1) {
+            _daysIndex += 1
             _dataset.value = getDataset()
         }
     }

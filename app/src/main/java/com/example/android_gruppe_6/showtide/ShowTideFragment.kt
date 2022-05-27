@@ -37,9 +37,6 @@ class ShowTideFragment : Fragment() {
             .get(ShowTideViewModel::class.java)
     }
 
-
-    private lateinit var data: List<DataEntry>
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
