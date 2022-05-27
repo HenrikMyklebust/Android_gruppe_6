@@ -2,6 +2,7 @@ package com.example.android_gruppe_6.showtide
 
 import android.app.Application
 import android.icu.util.Calendar
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.anychart.AnyChart
 import com.anychart.chart.common.dataentry.DataEntry
@@ -15,6 +16,7 @@ import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
 import com.example.android_gruppe_6.repository.TideRepository
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.Calendar.DAY_OF_MONTH
 
 class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() {
@@ -26,6 +28,9 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
     private val _currentDayOfMonth = MutableLiveData<Int>()
     val currentDayOfMonth: LiveData<Int> get() = _currentDayOfMonth
+
+    private val _apiRequest = MutableLiveData<Boolean>()
+    val apiRequest: LiveData<Boolean> get() = _apiRequest
 
     private val _displayingDay = MutableLiveData<Int>()
 
@@ -59,11 +64,22 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
         tide = repository.getDbTide(harbor.apiName)
         if (tide.isNullOrEmpty()) {
-            repository.insertTides(repository.getApiTide(harbor.apiName))
-            tide = repository.getDbTide(harbor.apiName)
+            try {
+                repository.insertTides(repository.getApiTide(harbor.apiName))
+                tide = repository.getDbTide(harbor.apiName)
+            }catch (e: Exception) {
+                _apiRequest.value = false
+            }
+            _apiRequest.value = true
+
         } else if (tide[0].day != getDay()) {
-            repository.insertTides(repository.getApiTide(harbor.apiName))
-            tide = repository.getDbTide(harbor.apiName)
+            try {
+                repository.insertTides(repository.getApiTide(harbor.apiName))
+                tide = repository.getDbTide(harbor.apiName)
+            }catch (e: Exception) {
+                _apiRequest.value = false
+            }
+            _apiRequest.value = true
         }
         return tide
     }
