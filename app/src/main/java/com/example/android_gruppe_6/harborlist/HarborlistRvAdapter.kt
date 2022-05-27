@@ -2,6 +2,8 @@ package com.example.android_gruppe_6.harborlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -34,6 +36,9 @@ class HarborlistRvAdapter(private val onClickListener: OnClickListener) : ListAd
         fun bind(harbor: Harbor) {
             binding.harbor = harbor
             binding.geo = String.format("lat: %.4f long: %.4f", harbor.lat, harbor.lon)
+            val preferenceManager = PreferenceManager.getDefaultSharedPreferences(itemView.context)
+            if (preferenceManager.getBoolean("lonLat", true))
+                binding.rvLatAndLong.isGone = true
             binding.executePendingBindings()
         }
     }
