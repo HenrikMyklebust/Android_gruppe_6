@@ -1,10 +1,12 @@
 package com.example.android_gruppe_6.showtide
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,8 +27,11 @@ import com.anychart.graphics.vector.Stroke
 import com.example.android_gruppe_6.R
 import com.example.android_gruppe_6.databinding.FragmentShowTideBinding
 import com.example.android_gruppe_6.domain.Harbor
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ShowTideFragment : Fragment() {
+
+    private lateinit var hideBottomNav: BottomNavigationView
 
     private val viewModel: ShowTideViewModel by lazy {
         val application = requireNotNull(activity).application
@@ -37,10 +42,13 @@ class ShowTideFragment : Fragment() {
             .get(ShowTideViewModel::class.java)
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val hideBottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNav)
+        hideBottomNav.isVisible = false
         val binding = FragmentShowTideBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -95,13 +103,17 @@ class ShowTideFragment : Fragment() {
             if (it != null) {
                 APIlib.getInstance().setActiveAnyChartView(binding.anyChartView)
                 set.data(viewModel.dataset.value)
+                binding.dataTitle.text = "${viewModel.harbor.name} : ${viewModel.dayOfMonth}/${viewModel.month}/${viewModel.year}"
             }
         })
 
         binding.bottomNavTest.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bnbNextDay -> viewModel.showNextDay()
-                R.id.bnbPopShowTide -> findNavController().popBackStack()
+                R.id.bnbPopShowTide -> {
+                    findNavController().popBackStack()
+                    hideBottomNav.isVisible = true
+                }
                 R.id.bnbPreviousDay -> viewModel.showPreviousDay()
                 else -> false
             }
@@ -111,5 +123,6 @@ class ShowTideFragment : Fragment() {
         // Inflate the layout for this fragment
         return binding.root
     }
+
 
 }

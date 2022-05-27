@@ -2,15 +2,8 @@ package com.example.android_gruppe_6.showtide
 
 import android.app.Application
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.lifecycle.*
-import com.anychart.AnyChart
 import com.anychart.chart.common.dataentry.DataEntry
-import com.anychart.charts.Cartesian
-import com.anychart.data.Set
-import com.anychart.enums.Anchor
-import com.anychart.enums.MarkerType
-import com.anychart.enums.TooltipPositionMode
 import com.example.android_gruppe_6.database.getDatabase
 import com.example.android_gruppe_6.domain.Harbor
 import com.example.android_gruppe_6.domain.TideData
@@ -22,9 +15,8 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     private val _tides = MutableLiveData<List<TideData>>()
     val tides: LiveData<List<TideData>> get() = _tides
 
-    private val days = mutableListOf<Int>()
+    private val _days = mutableListOf<Int>()
     private var _daysIndex: Int = 0
-    private var updateDays: Boolean = false
 
     private val _dataset = MutableLiveData<List<DataEntry>>()
     val dataset: LiveData<List<DataEntry>> = _dataset
@@ -46,21 +38,32 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
 
     init {
         val temp = Calendar.getInstance()
-        _dayOfMonth = temp.get(DAY_OF_MONTH)
         _month = temp.get(MONTH)
         _year = temp.get(YEAR)
         _dataset.value = getDataset()
 
         viewModelScope.launch {
             _tides.value = getTide()
+
+            for (x in _tides.value.orEmpty()) {
+                if (x.day !in _days) {
+                    _days.add(x.day)
+                }
+            }
+            _daysIndex = _days.indexOf(getDay())
+            if (_daysIndex == -1) {
+                _daysIndex = 0
+            }
+            _dayOfMonth = _days.get(_daysIndex)
             _dataset.value = getDataset()
         }
     }
 
     fun showNextDay() {
-        if (_daysIndex < days.size - 1) {
+        if (_daysIndex < _days.size - 1) {
             _daysIndex += 1
             _dataset.value = getDataset()
+            _dayOfMonth = _days[_daysIndex]
         }
     }
 
@@ -68,6 +71,7 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
         if (_daysIndex > 0){
             _daysIndex -= 1
             _dataset.value = getDataset()
+            _dayOfMonth = _days[_daysIndex]
         }
 
     }
@@ -78,11 +82,9 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
     }
 
     private suspend fun getTide(): List<TideData> {
-        updateDays = true
         var tide: List<TideData>
 
         tide = repository.getDbTide(harbor.apiName)
-        val temp = mutableListOf<Int>()
 
         if (tide.isNullOrEmpty()) {
             repository.insertTides(repository.getApiTide(harbor.apiName))
@@ -100,24 +102,13 @@ class ShowTideViewModel(val harbor: Harbor, val app: Application) : ViewModel() 
             seriesData.add(CustomDataEntry("0", 0, 0,0))
             return seriesData
         }
-        if (updateDays) {
-            days.clear()
-            _daysIndex = 0
-            _month = tides.value!![0].month
-        }
         for (x in _tides.value.orEmpty()) {
-            if ((updateDays) && (x.day !in days)) {
-                days.add(x.day)
-            }
-            if (x.day == days[_daysIndex]) {
+            if (x.day == _days[_daysIndex]) {
                 seriesData.add(CustomDataEntry(x.hour.toString(), x.total, x.tide, x.surge))
                 if (x.month != _month) {
                     _month = x.month
                 }
             }
-        }
-        if (updateDays) {
-            updateDays = false
         }
         return seriesData
     }
