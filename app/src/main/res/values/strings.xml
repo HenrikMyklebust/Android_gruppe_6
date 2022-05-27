@@ -24,4 +24,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="chartError">Not able to download fresh data, check your internet connection</string>
     <string name="menuSettings">Settings</string>
+    <string name="settingsShowLonLat">Hide lon and lat values</string>
+    <string name="settingsShowHide">Show / Hide</string>
 </resources>
